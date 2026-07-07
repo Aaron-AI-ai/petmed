@@ -7,4 +7,8 @@ services:
     volumes:
       # 서비스할 마크다운 문서 디렉토리 (호스트 경로를 바꿔서 사용)
       - ./wiki-docs:/docs:ro
+      # 시설 정형 데이터 (생성: uv run mcp-wiki-import datas/*.csv -o facilities.db)
+      - ./facilities.db:/data/facilities.db:ro
+    environment:
+      WIKI_FACILITIES_DB: /data/facilities.db
     restart: unless-stopped

@@ -9,6 +9,7 @@ FastMCP 기반 **Streamable HTTP** transport로 동작합니다.
 |---|---|---|
 | `search` | `query` (공백 구분 키워드), `limit` (기본 10) | 문서별 경로/제목/점수(score)/매칭 수 + 섹션 단위 snippet(최대 3개) JSON |
 | `read` | `path` (search 결과의 상대 경로) | 문서 전체 내용 JSON |
+| `find_facility` | `facility_type`(동물병원/동물약국/동물미용업), `region`, `name`, `include_closed`, `limit` | 전국 인허가 시설 목록 JSON (기본: 영업 중만) |
 
 ## 검색 엔진
 
@@ -17,6 +18,17 @@ FastMCP 기반 **Streamable HTTP** transport로 동작합니다.
 - **bm25** (기본) — 문자 bigram 토큰화 BM25 랭킹. 한국어 조사/합성어 부분 매칭 지원 ("백신" ↔ "종합백신을")
 - **keyword** — 공백 키워드 AND 부분 문자열 매칭 (정확 매칭 위주)
 - (예정) 임베딩 기반 시맨틱 검색 + BM25 하이브리드(점수 융합)
+
+## 시설 정형 데이터 (SQLite)
+
+동물병원/동물약국/동물미용업 인허가 데이터(공공데이터포털 LOCALDATA CSV)는 위키(md)와 분리하여 SQLite에 저장한다:
+
+```bash
+# CSV(cp949/utf-8 자동 인식) → facilities.db 생성/갱신 (전체 교체 방식)
+uv run mcp-wiki-import datas/*.csv -o facilities.db
+```
+
+서버에 `--facilities-db facilities.db` (또는 `WIKI_FACILITIES_DB`)로 연결하면 `find_facility` 도구가 활성화된다. 미설정 시 도구는 안내 오류를 반환한다. `datas/`(원본 CSV)와 `facilities.db`는 git에 커밋하지 않는다.
 
 ## 문서 저장소
 

@@ -138,6 +138,14 @@
 
 ---
 
+## Post-Workflow - Skin/Grooming Docs, MCP Client Connection, Facilities SQLite
+**Timestamp**: 2026-07-07T17:00:00Z
+**User Input**: (sequence) "강아지 피부 관리나 미용과 관련된 논문이나 자료도 검색해서 추가해줘" / "공공 데이터나 동물 병원 약국 등에 대한 정보를 외부에서 가져올수 없을까 ? 방법 알아봐줘" / "이런 데이터들은 정형 데이터 일것 같아요 이런 데이터는 별도 sqlite와 같은 db에 저장하는건 어떻게 생각해 ?" / "현재까지 구현된 것으로 먼저 docker로 local에 실행부터 해줘" / "현재 pc에 claude pc에 mcp 연결해줄래 >" / "공공 데이터에 어떤 데이터를 csv로 줘야 하나요 ?" / "datas 폴더 아래 csv파일 두었습니다."
+**AI Response**: (1) Added wiki-docs/grooming/{skin-care,grooming-basics}.md with ICADA/AAHA/PMC citations. (2) Researched Korean public data sources (data.go.kr, LOCALDATA, animal.go.kr APIs). (3) Agreed SQLite for structured facility data. (4) Rebuilt/started Docker service on :8800, smoke-tested. (5) Connected MCP to Claude Code (user scope, HTTP, ✔ Connected) and Claude Desktop (mcp-remote bridge in claude_desktop_config.json). (6) Guided CSV selection. (7) CSVs located at ~/workspace/gordian-coder/datas, copied to petmed/datas/ (동물병원 10,578 / 동물약국 20,560 / 동물미용업 15,952 rows, cp949). Implemented facilities.py (import_csvs + FacilityStore + mcp-wiki-import CLI), find_facility MCP tool, 8 tests (42 total pass). Imported 47,090 rows to facilities.db, mounted into compose with WIKI_FACILITIES_DB, rebuilt container, verified find_facility E2E (강남구 동물병원, 부산 약국, no-match). datas/ and facilities.db excluded from git.
+**Context**: Post-workflow enhancement
+
+---
+
 ## Post-Workflow - BM25 Search Engine
 **Timestamp**: 2026-07-07T15:55:00Z
 **User Input**: "서치에 대한 부분에 bm25 알고리즘 도입할수 없나요? 추후 시멘틱 검색 즉 임베딩 정보 유사도랑 하이브리드로 관리하고 싶어요"

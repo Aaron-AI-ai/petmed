@@ -7,6 +7,7 @@ from pathlib import Path
 
 from fastmcp import FastMCP
 
+from .facilities import FacilityStore
 from .models import SearchEngine
 from .search import DEFAULT_LIMIT, BM25SearchEngine, KeywordSearchEngine
 from .store import DocumentStore, DocumentStoreError
@@ -17,13 +18,15 @@ ENGINES = {"bm25": BM25SearchEngine, "keyword": KeywordSearchEngine}
 
 _store: DocumentStore | None = None
 _engine: SearchEngine | None = None
+_facilities: FacilityStore | None = None
 
 
-def configure(docs_root: Path, engine: str = "bm25") -> None:
+def configure(docs_root: Path, engine: str = "bm25", facilities_db: Path | None = None) -> None:
     """문서 루트와 검색 엔진을 설정한다. 루트가 없으면 즉시 실패 (BR-11)."""
-    global _store, _engine
+    global _store, _engine, _facilities
     _store = DocumentStore(docs_root)
     _engine = ENGINES[engine](_store)
+    _facilities = FacilityStore(facilities_db) if facilities_db else None
 
 
 @mcp.tool
@@ -58,6 +61,37 @@ def read(path: str) -> dict:
         return {"error": str(e)}
 
 
+@mcp.tool
+def find_facility(
+    facility_type: str | None = None,
+    region: str | None = None,
+    name: str | None = None,
+    include_closed: bool = False,
+    limit: int = 20,
+) -> dict:
+    """동물 관련 시설을 조건으로 검색합니다 (전국 인허가 공공데이터).
+
+    facility_type: "동물병원" | "동물약국" | "동물미용업" (부분 일치 가능)
+    region: 시/도, 시/군/구 또는 주소 일부 (예: "강남구", "서울")
+    name: 시설명 일부
+    기본적으로 영업 중인 시설만 반환하며, include_closed=True면 폐업 이력 포함.
+    """
+    if _facilities is None:
+        return {"error": "시설 DB가 설정되지 않았습니다 (--facilities-db 또는 WIKI_FACILITIES_DB)"}
+    results = _facilities.find(
+        facility_type=facility_type,
+        region=region,
+        name=name,
+        include_closed=include_closed,
+        limit=limit,
+    )
+    return {
+        "total": len(results),
+        "results": results,
+        "message": None if results else "조건에 맞는 시설이 없습니다.",
+    }
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="LLM Wiki MCP server (Streamable HTTP)")
     parser.add_argument(
@@ -73,12 +107,21 @@ def main() -> None:
         default=os.environ.get("WIKI_SEARCH_ENGINE", "bm25"),
         help="검색 엔진 (env: WIKI_SEARCH_ENGINE, 기본 bm25)",
     )
+    parser.add_argument(
+        "--facilities-db",
+        default=os.environ.get("WIKI_FACILITIES_DB"),
+        help="시설 SQLite DB 경로 (env: WIKI_FACILITIES_DB, 선택)",
+    )
     args = parser.parse_args()
 
     if not args.docs_root:
         parser.error("--docs-root 인자 또는 WIKI_DOCS_ROOT 환경변수가 필요합니다")
 
-    configure(Path(args.docs_root), engine=args.engine)
+    configure(
+        Path(args.docs_root),
+        engine=args.engine,
+        facilities_db=Path(args.facilities_db) if args.facilities_db else None,
+    )
     mcp.run(transport="http", host=args.host, port=args.port)
 
 

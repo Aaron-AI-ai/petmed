@@ -9,6 +9,7 @@ dependencies = [
 
 [project.scripts]
 mcp-wiki-server = "mcp_wiki.server:main"
+mcp-wiki-import = "mcp_wiki.facilities:main"
 
 [dependency-groups]
 dev = [

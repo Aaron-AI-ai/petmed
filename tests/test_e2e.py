@@ -61,7 +61,7 @@ def test_tools_exposed(server_url):
     async def check(c):
         return sorted(t.name for t in await c.list_tools())
 
-    assert _run(server_url, check) == ["read", "search"]
+    assert _run(server_url, check) == ["find_facility", "read", "search"]
 
 
 def test_search_then_read_flow(server_url):
