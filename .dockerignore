@@ -1,0 +1,8 @@
+.git
+.venv
+aidlc-docs
+tests
+sample-docs
+README.md
+CLAUDE.md
+.aidlc-rule-details

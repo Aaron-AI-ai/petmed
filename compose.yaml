@@ -1,0 +1,10 @@
+services:
+  mcp-wiki:
+    build: .
+    ports:
+      # 호스트 8000은 다른 서비스(fico-mcp)가 사용 중이라 8800 사용
+      - "8800:8000"
+    volumes:
+      # 서비스할 마크다운 문서 디렉토리 (호스트 경로를 바꿔서 사용)
+      - ./wiki-docs:/docs:ro
+    restart: unless-stopped
