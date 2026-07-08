@@ -146,6 +146,14 @@
 
 ---
 
+## Post-Workflow - Symptom Triage Guides
+**Timestamp**: 2026-07-08T10:30:00Z
+**User Input**: "그럼 추가적으로 동물의 증상으로 어떤 병일 가능성과 어떤 병원을 가도록 가이드 할수 있을까 ?" → "진행해주세요"
+**AI Response**: Created wiki-docs/symptoms/ with 8 triage documents (triage-guide index + vomiting-diarrhea, urinary-problems, breathing-difficulty, seizures, limping, itching, appetite-loss) using 🔴/🟡/🟢 urgency levels, cross-links to disease/prevention docs, medical disclaimers, and cited sources (BluePearl, VCA, Vets Now, AAHA). Enhanced search/find_facility tool docstrings (symptom workflow + name="24시" emergency hospital tip). 42 tests pass, Docker rebuilt, verified E2E: symptom queries rank triage docs first, 역삼동 24시 hospital lookup works.
+**Context**: Post-workflow enhancement
+
+---
+
 ## Post-Workflow - BM25 Search Engine
 **Timestamp**: 2026-07-07T15:55:00Z
 **User Input**: "서치에 대한 부분에 bm25 알고리즘 도입할수 없나요? 추후 시멘틱 검색 즉 임베딩 정보 유사도랑 하이브리드로 관리하고 싶어요"

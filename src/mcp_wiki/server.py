@@ -36,6 +36,10 @@ def search(query: str, limit: int = DEFAULT_LIMIT) -> dict:
     공백으로 구분된 모든 키워드가 포함된(AND, 대소문자 무시) 마크다운 문서를 찾아
     경로/제목/매칭 수와 섹션 단위 발췌(snippet, 문서당 최대 3개)를 반환합니다.
     전체 내용이 필요하면 결과의 path로 read 도구를 호출하세요.
+
+    반려동물 증상 상담 시: 증상 키워드(예: "구토", "배뇨", "경련")로 검색하면
+    symptoms/ 카테고리의 긴급도(트리아지) 가이드가 매칭됩니다. 응급 신호가 있으면
+    find_facility로 근처 병원(야간은 name="24시")을 함께 안내하세요.
     """
     try:
         results = _engine.search(query, limit)
@@ -72,8 +76,8 @@ def find_facility(
     """동물 관련 시설을 조건으로 검색합니다 (전국 인허가 공공데이터).
 
     facility_type: "동물병원" | "동물약국" | "동물미용업" (부분 일치 가능)
-    region: 시/도, 시/군/구 또는 주소 일부 (예: "강남구", "서울")
-    name: 시설명 일부
+    region: 시/도, 시/군/구, 동 단위 또는 주소 일부 (예: "강남구", "역삼동", "서울")
+    name: 시설명 일부 — 야간/응급 병원을 찾을 때는 name="24시"로 검색
     기본적으로 영업 중인 시설만 반환하며, include_closed=True면 폐업 이력 포함.
     """
     if _facilities is None:
