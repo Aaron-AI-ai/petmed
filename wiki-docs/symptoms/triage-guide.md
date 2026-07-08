@@ -28,6 +28,7 @@
 | 절뚝거림(파행) | `symptoms/limping.md` |
 | 가려움·긁기 | `symptoms/itching.md` |
 | 식욕 부진 | `symptoms/appetite-loss.md` |
+| 피부 병변·상처 (사진 판독) | `symptoms/skin-lesions.md` |
 
 ## 야간·응급 병원 찾기
 

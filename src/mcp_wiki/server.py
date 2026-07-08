@@ -40,6 +40,8 @@ def search(query: str, limit: int = DEFAULT_LIMIT) -> dict:
     반려동물 증상 상담 시: 증상 키워드(예: "구토", "배뇨", "경련")로 검색하면
     symptoms/ 카테고리의 긴급도(트리아지) 가이드가 매칭됩니다. 응급 신호가 있으면
     find_facility로 근처 병원(야간은 name="24시")을 함께 안내하세요.
+    피부/상처 사진이 첨부된 경우: 사진에서 관찰한 특징(예: "원형 탈모", "농포",
+    "물린 상처")으로 검색하면 사진 판독 가이드(symptoms/skin-lesions.md)가 매칭됩니다.
     """
     try:
         results = _engine.search(query, limit)

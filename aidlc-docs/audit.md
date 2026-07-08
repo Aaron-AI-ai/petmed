@@ -146,6 +146,14 @@
 
 ---
 
+## Post-Workflow - Photo-Based Skin Lesion Triage (Phase 1)
+**Timestamp**: 2026-07-08T11:30:00Z
+**User Input**: "특정 동물들에 피부나 상처에 사진으로 진단하고자 한다면 어떤 기능이 필요할까 ?" → (assessment: Phase 1 = LLM vision + wiki grounding docs, Phase 2 = dedicated classifier) → "Phase 1로 진행해주세요"
+**AI Response**: Created wiki-docs/symptoms/skin-lesions.md — photo shooting guide, visual characteristics per lesion type (hot spot, ringworm ring pattern, pyoderma pustules, lumps, tick attachment), wound triage (bite wounds = red flag with 6-hour window, no alcohol/peroxide first aid), strengthened disclaimer for photo-based guidance. Sources: PetMD, MSD/Merck Vet Manual, VCA. Updated triage-guide.md index and search tool docstring (photo scenario hint). 42 tests pass, Docker rebuilt, verified photo-feature queries rank skin-lesions.md first.
+**Context**: Post-workflow enhancement
+
+---
+
 ## Post-Workflow - Symptom Triage Guides
 **Timestamp**: 2026-07-08T10:30:00Z
 **User Input**: "그럼 추가적으로 동물의 증상으로 어떤 병일 가능성과 어떤 병원을 가도록 가이드 할수 있을까 ?" → "진행해주세요"
