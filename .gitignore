@@ -4,4 +4,3 @@ __pycache__/
 .hypothesis/
 dist/
 datas/
-facilities.db
