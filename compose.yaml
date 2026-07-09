@@ -6,10 +6,6 @@ services:
     ports:
       # 호스트 8000은 다른 서비스(fico-mcp)가 사용 중이라 8800 사용
       - "8800:8000"
-    # wiki-docs/와 facilities.db는 이미지에 포함됨 (Dockerfile COPY).
-    # 문서/데이터 갱신 = ./deploy.sh 재실행(재빌드).
-    environment:
-      # Host 헤더 검증(DNS 리바인딩 보호) 전체 허용 — 어떤 주소로 접속해도 응답.
-      # 인증 없는 서버이므로 공개망 노출 시 방화벽/VPN으로 접근 제어할 것.
-      FASTMCP_HTTP_ALLOWED_HOSTS: '["*"]'
+    # wiki-docs/, facilities.db, 환경변수(FASTMCP_HTTP_ALLOWED_HOSTS 포함)는
+    # 모두 이미지에 포함됨 (Dockerfile). 문서/데이터 갱신 = ./deploy.sh 재실행.
     restart: unless-stopped

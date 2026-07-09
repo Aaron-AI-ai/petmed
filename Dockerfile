@@ -18,7 +18,8 @@ COPY facilities.db /data/facilities.db
 ENV WIKI_DOCS_ROOT=/docs \
     WIKI_FACILITIES_DB=/data/facilities.db \
     WIKI_HOST=0.0.0.0 \
-    WIKI_PORT=8000
+    WIKI_PORT=8000 \
+    FASTMCP_HTTP_ALLOWED_HOSTS='["*"]'
 
 EXPOSE 8000
 
