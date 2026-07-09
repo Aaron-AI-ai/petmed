@@ -18,9 +18,10 @@ COPY facilities.db /data/facilities.db
 ENV WIKI_DOCS_ROOT=/docs \
     WIKI_FACILITIES_DB=/data/facilities.db \
     WIKI_HOST=0.0.0.0 \
-    WIKI_PORT=8000 \
+    WIKI_PORT=8080 \
     FASTMCP_HTTP_ALLOWED_HOSTS='["*"]'
 
-EXPOSE 8000
+# 8080 = KServe InferenceService 기본 라우팅 포트에 맞춤
+EXPOSE 8080
 
 CMD ["uv", "run", "--frozen", "--no-dev", "mcp-wiki-server"]
