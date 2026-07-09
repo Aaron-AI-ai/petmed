@@ -140,6 +140,11 @@ def main() -> None:
         default=os.environ.get("WIKI_FACILITIES_DB"),
         help="시설 SQLite DB 경로 (env: WIKI_FACILITIES_DB, 선택)",
     )
+    parser.add_argument(
+        "--path",
+        default=os.environ.get("WIKI_MCP_PATH", "/mcp"),
+        help="MCP 엔드포인트 경로 (env: WIKI_MCP_PATH, 기본 /mcp)",
+    )
     args = parser.parse_args()
 
     if not args.docs_root:
@@ -150,7 +155,7 @@ def main() -> None:
         engine=args.engine,
         facilities_db=Path(args.facilities_db) if args.facilities_db else None,
     )
-    mcp.run(transport="http", host=args.host, port=args.port)
+    mcp.run(transport="http", host=args.host, port=args.port, path=args.path)
 
 
 if __name__ == "__main__":
