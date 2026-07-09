@@ -11,7 +11,12 @@ RUN uv sync --frozen --no-dev --no-install-project
 COPY src ./src
 RUN uv sync --frozen --no-dev
 
+# 위키 문서와 시설 DB를 이미지에 포함 — 이미지 하나로 완전 독립 실행
+COPY wiki-docs /docs
+COPY facilities.db /data/facilities.db
+
 ENV WIKI_DOCS_ROOT=/docs \
+    WIKI_FACILITIES_DB=/data/facilities.db \
     WIKI_HOST=0.0.0.0 \
     WIKI_PORT=8000
 

@@ -7,25 +7,22 @@ cd "$(dirname "$0")"
 command -v docker >/dev/null || { echo "ERROR: docker가 필요합니다"; exit 1; }
 docker info >/dev/null 2>&1 || { echo "ERROR: docker 데몬이 실행 중이 아닙니다"; exit 1; }
 
-echo "==> 이미지 빌드"
-docker compose build
-
-IMAGE=$(docker compose config --images | head -1)
-
-# facilities.db 준비: 없으면 CSV 임포트, CSV도 없으면 빈 스키마 생성
+# facilities.db 준비 (이미지에 COPY되므로 빌드 전에 필요).
+# facilities.py는 표준 라이브러리만 사용 — 순수 python 이미지로 임포트 가능.
 if [ ! -f facilities.db ]; then
   if ls datas/*.csv >/dev/null 2>&1; then
     echo "==> facilities.db 생성 (datas/*.csv 임포트)"
-    # 이미지에 설치된 실행 파일을 직접 사용 — 마운트된 프로젝트의 .venv를 건드리지 않음
-    docker run --rm -v "$PWD:/work" -w /work "$IMAGE" \
-      /app/.venv/bin/mcp-wiki-import datas/*.csv -o facilities.db
+    docker run --rm -v "$PWD:/work" -w /work -e PYTHONPATH=src python:3.12-slim \
+      python -m mcp_wiki.facilities datas/*.csv -o facilities.db
   else
     echo "==> facilities.db 없음, datas/*.csv 도 없음 — 빈 DB 생성 (find_facility는 빈 결과 반환)"
-    docker run --rm -v "$PWD:/work" -w /work "$IMAGE" \
-      /app/.venv/bin/python -c \
-      "import sqlite3; from mcp_wiki.facilities import _SCHEMA; sqlite3.connect('/work/facilities.db').executescript(_SCHEMA)"
+    docker run --rm -v "$PWD:/work" -w /work -e PYTHONPATH=src python:3.12-slim \
+      python -c "import sqlite3; from mcp_wiki.facilities import _SCHEMA; sqlite3.connect('facilities.db').executescript(_SCHEMA)"
   fi
 fi
+
+echo "==> 이미지 빌드 (wiki-docs + facilities.db 포함)"
+docker compose build
 
 echo "==> 컨테이너 기동"
 docker compose up -d

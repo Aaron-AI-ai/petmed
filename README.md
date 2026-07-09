@@ -42,13 +42,13 @@ uv sync                                        # 의존성 설치 (Python 3.12)
 uv run mcp-wiki-server --docs-root wiki-docs   # http://127.0.0.1:8000/mcp
 ```
 
-### Docker Compose
+### Docker (원커맨드 배포)
 
 ```bash
-docker compose up -d --build    # http://127.0.0.1:8800/mcp (호스트 8000은 다른 서비스 사용 중)
+./deploy.sh    # facilities.db 준비 → 이미지 빌드 → 기동 → 헬스체크. http://<호스트>:8800/mcp
 ```
 
-`compose.yaml`이 `./wiki-docs`를 컨테이너 `/docs`에 읽기 전용 마운트합니다. 문서 경로를 바꾸려면 volumes 항목 수정.
+**wiki-docs/와 facilities.db는 이미지 안에 포함**됩니다(Dockerfile COPY). 이미지 하나로 완전 독립 실행이 가능하며(`docker run -p 8800:8000 petmed-mcp-wiki`), 문서/데이터 갱신은 `./deploy.sh` 재실행(재빌드)으로 반영합니다. 단, `docker build`에는 `facilities.db` 파일이 미리 있어야 합니다 — deploy.sh가 자동 생성합니다.
 
 설정 (CLI 인자 또는 환경변수):
 
