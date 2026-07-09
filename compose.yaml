@@ -11,7 +11,7 @@ services:
       - ./facilities.db:/data/facilities.db:ro
     environment:
       WIKI_FACILITIES_DB: /data/facilities.db
-      # 외부 IP/도메인으로 접속 시 Host 헤더 허용 목록 (fastmcp DNS 리바인딩 보호).
-      # localhost/127.0.0.1은 항상 허용. 원격 배포 주소를 여기에 추가.
-      FASTMCP_HTTP_ALLOWED_HOSTS: '["221.168.33.119"]'
+      # Host 헤더 검증(DNS 리바인딩 보호) 전체 허용 — 어떤 주소로 접속해도 응답.
+      # 인증 없는 서버이므로 공개망 노출 시 방화벽/VPN으로 접근 제어할 것.
+      FASTMCP_HTTP_ALLOWED_HOSTS: '["*"]'
     restart: unless-stopped
