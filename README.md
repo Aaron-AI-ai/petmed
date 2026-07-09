@@ -45,8 +45,10 @@ uv run mcp-wiki-server --docs-root wiki-docs   # http://127.0.0.1:8000/mcp
 ### Docker (원커맨드 배포)
 
 ```bash
-./deploy.sh    # facilities.db 준비 → 이미지 빌드 → 기동 → 헬스체크. http://<호스트>:8800/mcp
+./deploy.sh    # facilities.db 준비 → 이미지 빌드 → 기동 → 헬스체크. http://<호스트>:8800/petmed-mcp
 ```
+
+이미지의 MCP 엔드포인트 경로 기본값은 **`/petmed-mcp`** 입니다 (`WIKI_MCP_PATH` env로 변경 가능, 로컬 실행 기본값은 `/mcp`).
 
 **wiki-docs/와 facilities.db는 이미지 안에 포함**됩니다(Dockerfile COPY). 이미지 하나로 완전 독립 실행이 가능하며(`docker run -p 8800:8000 petmed-mcp-wiki`), 문서/데이터 갱신은 `./deploy.sh` 재실행(재빌드)으로 반영합니다. 단, `docker build`에는 `facilities.db` 파일이 미리 있어야 합니다 — deploy.sh가 자동 생성합니다.
 

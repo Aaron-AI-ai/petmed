@@ -20,7 +20,8 @@ ENV WIKI_DOCS_ROOT=/docs \
     WIKI_HOST=0.0.0.0 \
     WIKI_PORT=8080 \
     FASTMCP_HTTP_ALLOWED_HOSTS='["*"]' \
-    FASTMCP_STATELESS_HTTP=true
+    FASTMCP_STATELESS_HTTP=true \
+    WIKI_MCP_PATH=/petmed-mcp
 
 # 8080 = KServe InferenceService 기본 라우팅 포트에 맞춤
 EXPOSE 8080
