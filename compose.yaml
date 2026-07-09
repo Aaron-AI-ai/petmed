@@ -1,6 +1,8 @@
 services:
   mcp-wiki:
     build: .
+    # 배포 대상 서버가 amd64 — Apple Silicon에서도 항상 amd64로 빌드/실행 (Rosetta 에뮬레이션)
+    platform: linux/amd64
     ports:
       # 호스트 8000은 다른 서비스(fico-mcp)가 사용 중이라 8800 사용
       - "8800:8000"
