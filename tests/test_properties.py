@@ -15,6 +15,7 @@ from hypothesis import strategies as st
 
 from mcp_wiki.models import Document
 from mcp_wiki.search import (
+    MAX_SNIPPET_CHARS,
     MAX_SNIPPETS_PER_DOC,
     BM25SearchEngine,
     KeywordSearchEngine,
@@ -88,7 +89,9 @@ def test_p2_p3_p4_p7_search_invariants(docs, query, limit):
         assert len(r.snippets) <= MAX_SNIPPETS_PER_DOC, "P4: snippet 상한"
         for s in r.snippets:
             assert s.text in doc.content, "P4: snippet은 원본의 부분 문자열"
-            assert any(k in s.text.lower() for k in keywords), "P4: snippet은 키워드 포함"
+            assert len(s.text) <= MAX_SNIPPET_CHARS, "P4: snippet 길이 상한"
+            if len(s.text) < MAX_SNIPPET_CHARS:  # 잘리지 않은 snippet만 키워드 보장
+                assert any(k in s.text.lower() for k in keywords), "P4: snippet은 키워드 포함"
 
 
 # --- P8: BM25 검색 불변식 (PBT-03) --------------------------------------------

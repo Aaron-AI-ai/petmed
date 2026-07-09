@@ -29,8 +29,8 @@ docker compose up -d
 
 echo "==> 헬스체크 (최대 15초)"
 for _ in $(seq 1 15); do
-  if curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:8800/mcp | grep -qE '40[06]'; then
-    # MCP 엔드포인트는 일반 GET에 400/406을 반환 = 서버 정상 기동
+  if curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:8800/mcp | grep -qE '40[056]'; then
+    # MCP 엔드포인트는 일반 GET에 400/406(stateful) 또는 405(stateless)를 반환 = 정상 기동
     echo "OK: http://127.0.0.1:8800/mcp"
     exit 0
   fi

@@ -19,7 +19,8 @@ ENV WIKI_DOCS_ROOT=/docs \
     WIKI_FACILITIES_DB=/data/facilities.db \
     WIKI_HOST=0.0.0.0 \
     WIKI_PORT=8080 \
-    FASTMCP_HTTP_ALLOWED_HOSTS='["*"]'
+    FASTMCP_HTTP_ALLOWED_HOSTS='["*"]' \
+    FASTMCP_STATELESS_HTTP=true
 
 # 8080 = KServe InferenceService 기본 라우팅 포트에 맞춤
 EXPOSE 8080

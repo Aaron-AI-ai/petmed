@@ -29,19 +29,23 @@ def configure(docs_root: Path, engine: str = "bm25", facilities_db: Path | None 
     _facilities = FacilityStore(facilities_db) if facilities_db else None
 
 
-@mcp.tool
+@mcp.tool(
+    annotations={
+        "title": "Search Pet Medical Wiki",
+        "readOnlyHint": True,
+        "destructiveHint": False,
+        "idempotentHint": True,
+        "openWorldHint": False,
+    }
+)
 def search(query: str, limit: int = DEFAULT_LIMIT) -> dict:
-    """위키 문서를 키워드로 검색합니다.
+    """Searches pet medical wiki documents from PetMed(펫메드) by keyword.
 
-    공백으로 구분된 모든 키워드가 포함된(AND, 대소문자 무시) 마크다운 문서를 찾아
-    경로/제목/매칭 수와 섹션 단위 발췌(snippet, 문서당 최대 3개)를 반환합니다.
-    전체 내용이 필요하면 결과의 path로 read 도구를 호출하세요.
-
-    반려동물 증상 상담 시: 증상 키워드(예: "구토", "배뇨", "경련")로 검색하면
-    symptoms/ 카테고리의 긴급도(트리아지) 가이드가 매칭됩니다. 응급 신호가 있으면
-    find_facility로 근처 병원(야간은 name="24시")을 함께 안내하세요.
-    피부/상처 사진이 첨부된 경우: 사진에서 관찰한 특징(예: "원형 탈모", "농포",
-    "물린 상처")으로 검색하면 사진 판독 가이드(symptoms/skin-lesions.md)가 매칭됩니다.
+    Documents (in Korean) cover vaccination, diseases, symptom triage with urgency
+    levels, toxic foods, grooming, nutrition, and life-stage care for dogs and cats.
+    Returns BM25-ranked results with path, title, and up to 3 section snippets each.
+    Use Korean symptom keywords (e.g. "구토", "경련") to find triage guides; call the
+    read tool with a result path for full content.
     """
     try:
         results = _engine.search(query, limit)
@@ -55,11 +59,19 @@ def search(query: str, limit: int = DEFAULT_LIMIT) -> dict:
     }
 
 
-@mcp.tool
+@mcp.tool(
+    annotations={
+        "title": "Read Wiki Document",
+        "readOnlyHint": True,
+        "destructiveHint": False,
+        "idempotentHint": True,
+        "openWorldHint": False,
+    }
+)
 def read(path: str) -> dict:
-    """마크다운 문서 전체 내용을 반환합니다.
+    """Reads the full content of a pet medical wiki document from PetMed(펫메드).
 
-    path는 search 결과가 돌려준 문서 루트 기준 상대 경로입니다.
+    The path parameter must be a document path returned by the search tool.
     """
     try:
         return asdict(_store.load_document(path))
@@ -67,7 +79,15 @@ def read(path: str) -> dict:
         return {"error": str(e)}
 
 
-@mcp.tool
+@mcp.tool(
+    annotations={
+        "title": "Find Animal Facilities in Korea",
+        "readOnlyHint": True,
+        "destructiveHint": False,
+        "idempotentHint": True,
+        "openWorldHint": False,
+    }
+)
 def find_facility(
     facility_type: str | None = None,
     region: str | None = None,
@@ -75,12 +95,12 @@ def find_facility(
     include_closed: bool = False,
     limit: int = 20,
 ) -> dict:
-    """동물 관련 시설을 조건으로 검색합니다 (전국 인허가 공공데이터).
+    """Finds Korean animal facilities from PetMed(펫메드) public license data.
 
-    facility_type: "동물병원" | "동물약국" | "동물미용업" (부분 일치 가능)
-    region: 시/도, 시/군/구, 동 단위 또는 주소 일부 (예: "강남구", "역삼동", "서울")
-    name: 시설명 일부 — 야간/응급 병원을 찾을 때는 name="24시"로 검색
-    기본적으로 영업 중인 시설만 반환하며, include_closed=True면 폐업 이력 포함.
+    facility_type: "동물병원" (hospital) | "동물약국" (pharmacy) | "동물미용업" (grooming).
+    region: Korean sido/sigungu/neighborhood or address fragment, e.g. "강남구".
+    name: facility name fragment — use name="24시" to find 24-hour emergency hospitals.
+    Only active businesses are returned unless include_closed=true.
     """
     if _facilities is None:
         return {"error": "시설 DB가 설정되지 않았습니다 (--facilities-db 또는 WIKI_FACILITIES_DB)"}
@@ -91,10 +111,12 @@ def find_facility(
         include_closed=include_closed,
         limit=limit,
     )
+    # PlayMCP 가이드: 결과 최소화 — 빈 필드는 제거하고 반환
+    slim = [{k: v for k, v in r.items() if v not in ("", None)} for r in results]
     return {
-        "total": len(results),
-        "results": results,
-        "message": None if results else "조건에 맞는 시설이 없습니다.",
+        "total": len(slim),
+        "results": slim,
+        "message": None if slim else "조건에 맞는 시설이 없습니다.",
     }
 
 

@@ -10,6 +10,7 @@ from .models import Document, SearchResult, Section, Snippet
 from .store import DocumentStore
 
 MAX_SNIPPETS_PER_DOC = 3  # BR-7
+MAX_SNIPPET_CHARS = 500  # PlayMCP 가이드: result 크기 최소화
 DEFAULT_LIMIT = 10  # BR-8 / 설계 결정 D-1
 
 _HEADING_RE = re.compile(r"^#{1,6}\s")
@@ -155,4 +156,7 @@ def _extract_snippets(doc: Document, keywords: list[str]) -> list[Snippet]:
         if count > 0:
             scored.append((-count, idx, section))
     scored.sort(key=lambda t: (t[0], t[1]))
-    return [Snippet(section=s.heading, text=s.text) for _, _, s in scored[:MAX_SNIPPETS_PER_DOC]]
+    return [
+        Snippet(section=s.heading, text=s.text[:MAX_SNIPPET_CHARS])
+        for _, _, s in scored[:MAX_SNIPPETS_PER_DOC]
+    ]
