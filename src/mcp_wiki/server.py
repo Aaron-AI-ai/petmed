@@ -22,11 +22,19 @@ _facilities: FacilityStore | None = None
 
 
 def configure(docs_root: Path, engine: str = "bm25", facilities_db: Path | None = None) -> None:
-    """문서 루트와 검색 엔진을 설정한다. 루트가 없으면 즉시 실패 (BR-11)."""
+    """문서 루트와 검색 엔진을 설정한다. 루트가 없으면 즉시 실패 (BR-11).
+
+    시설 DB는 없어도 서버를 죽이지 않는다 — 위키는 서비스하고 find_facility만 비활성.
+    """
     global _store, _engine, _facilities
     _store = DocumentStore(docs_root)
     _engine = ENGINES[engine](_store)
-    _facilities = FacilityStore(facilities_db) if facilities_db else None
+    if facilities_db and facilities_db.is_file():
+        _facilities = FacilityStore(facilities_db)
+    else:
+        _facilities = None
+        if facilities_db:
+            print(f"WARN: 시설 DB 없음({facilities_db}) — find_facility 비활성화", flush=True)
 
 
 @mcp.tool(

@@ -11,12 +11,13 @@ RUN uv sync --frozen --no-dev --no-install-project
 COPY src ./src
 RUN uv sync --frozen --no-dev
 
-# 위키 문서와 시설 DB를 이미지에 포함 — 이미지 하나로 완전 독립 실행
-COPY wiki-docs /docs
-COPY facilities.db /data/facilities.db
+# 위키 문서와 시설 DB를 이미지에 포함 — 이미지 하나로 완전 독립 실행.
+# /data, /docs 같은 최상위 경로는 배포 플랫폼이 볼륨을 마운트해 가릴 수 있어 /app 아래에 둔다.
+COPY wiki-docs /app/wiki-docs
+COPY facilities.db /app/facilities.db
 
-ENV WIKI_DOCS_ROOT=/docs \
-    WIKI_FACILITIES_DB=/data/facilities.db \
+ENV WIKI_DOCS_ROOT=/app/wiki-docs \
+    WIKI_FACILITIES_DB=/app/facilities.db \
     WIKI_HOST=0.0.0.0 \
     WIKI_PORT=8000 \
     FASTMCP_HTTP_ALLOWED_HOSTS='["*"]' \
