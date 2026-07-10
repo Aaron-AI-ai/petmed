@@ -1,4 +1,8 @@
-# petmed — LLM Wiki MCP Server
+# PetMed(펫메드) — LLM Wiki MCP Server
+
+**PetMed(펫메드)** 는 반려동물 의료 지식 위키와 전국 동물병원·약국 데이터를 AI에게 연결해주는 MCP(Model Context Protocol) 서버입니다. 증상을 이야기하면 수의학 가이드라인 기반 문서로 긴급도를 판단하고, 예방접종·영양·생애주기별 케어 정보부터 지역별 24시 동물병원 검색까지 하나의 대화로 안내합니다. Python + FastMCP 기반의 BM25 검색 엔진과 공공데이터 47,000여 건을 Docker 이미지 하나에 담아, 어디서든 명령어 한 줄로 실행할 수 있습니다.
+
+---
 
 서버의 특정 디렉토리에 있는 마크다운(.md) 문서를 검색/조회하는 MCP 서비스입니다.
 FastMCP 기반 **Streamable HTTP** transport로 동작합니다.
