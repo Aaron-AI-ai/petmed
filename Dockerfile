@@ -22,7 +22,7 @@ ENV WIKI_DOCS_ROOT=/app/wiki-docs \
     WIKI_PORT=8000 \
     FASTMCP_HTTP_ALLOWED_HOSTS='["*"]' \
     FASTMCP_STATELESS_HTTP=true \
-    WIKI_MCP_PATH=/petmed-mcp
+    WIKI_MCP_PATH=/mcp
 
 # 배포 플랫폼 콘솔의 컨테이너 포트 설정(8000)과 일치
 EXPOSE 8000
