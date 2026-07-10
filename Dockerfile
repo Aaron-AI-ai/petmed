@@ -18,12 +18,12 @@ COPY facilities.db /data/facilities.db
 ENV WIKI_DOCS_ROOT=/docs \
     WIKI_FACILITIES_DB=/data/facilities.db \
     WIKI_HOST=0.0.0.0 \
-    WIKI_PORT=8080 \
+    WIKI_PORT=8000 \
     FASTMCP_HTTP_ALLOWED_HOSTS='["*"]' \
     FASTMCP_STATELESS_HTTP=true \
     WIKI_MCP_PATH=/petmed-mcp
 
-# 8080 = KServe InferenceService 기본 라우팅 포트에 맞춤
-EXPOSE 8080
+# 배포 플랫폼 콘솔의 컨테이너 포트 설정(8000)과 일치
+EXPOSE 8000
 
 CMD ["uv", "run", "--frozen", "--no-dev", "mcp-wiki-server"]
